@@ -1,0 +1,111 @@
+# Core Design
+This page covers the aspects of the implementation that are common between the prototype and production code bases.
+
+## Overview
+This application consists of a small interactive game where the user (or the player) controls an avatar and is tasked with solving a randomly generated maze. The perspective of the game is top-down, and the player can move freely in any direction. The maze is considered solved when the player has reached a location in the maze designated as the destination location. The player will be timed when navigating the maze. If the player is unable to complete the maze in the allotted time, a failure sequence is triggered. During the failure sequence, the player is notified that they were not successful and the avatar proceeds to solve the maze automatically. The player also has the option to concede, which also triggers the failure sequence.
+
+This application is programmed in the Unity/C# environment. It is available on PC/Mac/Linux systems. It is for education purposes only and is not intended to be marketed as a commercial product.
+
+## Environment Architecture
+Each maze is created on a grid of cells. Cells are data objects that hold information about a particular location on the grid, such as its coordinate pair. Cells also contain a collection of flags that signal to the frontend its current state, such as the visited flag used in the maze generation algorithms. Finally, cells have four walls represented by boolean values. A wall is considered active if the associated boolean boolean is true, and inactive if that boolean is false. Two cells are considered traversable if the wall between them is inactive.
+
+When the state of a cell is updated, it invokes a delegate signaling that an update has occured. Frontend systems can then observe the backend cell object and update to reflect the cell's new state. The frontend systems observing the cells vary between the prototype and the production applications (see Prototype Design (ADD LINK) and Production Design (ADD LINK) for details), however the backend cell architecture is consistent between the two.
+
+## Algorithms and Theory
+Several classic maze generation and pathfinding algorithms are used to create this application. This section details each algorithm and discusses their individual efficacies.
+
+### Maze Generation
+
+#### Randomized Iterative Depth-First Search
+This implementation of the randomized iterative depth-first search algorithm present in this application is synthesized from two sources: the [Wikipedia page](https://en.wikipedia.org/wiki/Maze_generation_algorithm) for maze generation algorithms and a [YouTube video](https://youtu.be/HyK_Q5rrcr4) by [The Coding Train](https://www.youtube.com/channel/UCvjgXvBlbQiydffZU7m1_aw). The former provides pseudocode for the algorithm and the latter provides an exhaustive implementation in JavaScript. Both sources use the same architecture to implement the algorithm, where cells contain information about their walls as booleans.
+
+The implementation in this application is as follows:
+1. Create a stack, *S*, for storage of Cell class objects.
+2. Choose the initial cell, mark it as the current cell and as visited and push it to *S*.
+3. While the stack is not empty:
+  1. Get a list of unvisited neighbors of the current cell. If the cell has unvisited neighbors, choose a random neighbor and designate it as the "next" cell. If the cell does not have unvisited neighbors, designate the "next" cell as null.
+  2. If the next cell is not null, remove the wall between the current cell and the next cell. Mark the next cell as the current cell and as visited, and push it to *S*. If the next cell is null and there are cells in *S*, pop a cell from *S*, and mark it as current and revisited.
+  3. If neither of the above conditions are true, the algorithm has finished.
+
+The iterative version of this algorithm is selected because the recursive version could require a recursion stack depth that is too long for certain environments. Since this application is meant to be a video game and therefore should theoretically be able to run on devices with limited computational power (such as smart phones), the iterative version is the safer choice.
+
+Biases for maze generation using this algorithm includes a bias toward a low branching factor and long corridors, both caused by the nature of the algorithm to travel as far as possible along each branch before backtracking.
+
+#### Randomized Kruskal's Algorithm (Modified)
+The implementation of the randomized Kruskal's algorithm in this application is based on the [Wikipedia page](https://en.wikipedia.org/wiki/Maze_generation_algorithm). The psuedocode present there is based on an environment architecture where cells and walls are treated as separate objects. Therefore, modifications were necessary to adapt the algorithm to the cell-based environment architecture described above. Still, the crux of the implementation is the disjoint-set data structure.
+
+The disjoint-set data structure, as excerpted and paraphrased from its [Wikipedia page](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) is a structure that stores a collection of non-overlapping sets as node trees and provides an efficient manner of determining if any two elements belong to the same set. This is achieved through three operations: adding a new set, merging sets, and finding the root of a set. Any two elements are considered to be in the same set if they have the same root.
+
+With this data structure in mind, the implementation in this application is as follows:
+1. Create a new disjoint-set data structure, *D*.
+2. Obtain a list, *L*, of the available grid cells in some random order. 
+3. For each cell in *L*:
+  1. Mark the cell as visited. 
+  2. Obtain a list of the cell's neighbors. For each neighbor:
+    1. Use *D* to determine if the two cells belong to the same set.
+    2. If the neighbor does not belong to the same set as the current cell, remove the wall between the current cell and its neighbor. Merge the set of the neighbor and the current cell in *D*, and mark the neighbor as visited.
+
+This algorithm is modified from the classic algorithm described on the Wikipedia page because, in this enviorment, walls are not modeled separately from cells. Therefore, obtaining a list of walls alone (as suggested by the Wikipedia page) is not meaningful. Instead, this modified code iterates through each of the cells and each of the cells' neighbors. The result is, instead of two cells becoming part of the maze per iteration, five become part of the maze per iteration (the current cell plus each of its four neighbors), if any of those five cells were not already part of the maze.
+
+There is a strong bias towards four-way intersections in mazes resulting from these modified algorithm, which in turn favors short corridors with lots of corners.
+
+#### Randomized Prim's Algorithm
+The implementation of the randomized Prim's algorithm in this application is based on the [Wikipedia page](https://en.wikipedia.org/wiki/Maze_generation_algorithm). The psuedocode present there is based on an environment architecture where cells and walls are treated as separate objects. Therefore, modifications were necessary to adapt the algorithm to the cell-based environment architecture described above.
+
+The implementation in this application is as follows:
+1. Create a list, *L*, for storage of Cell class objects.
+2. Choose the initial cell, mark it as the current cell and as visited.
+3. Add all unvisited neighbors of the current cell to *L*.
+4. While there are cells in *L*:
+  1. Choose a random, unvisited cell, *U*, from *L*
+  2. Retrieve a list of *U*'s visited neighbors.
+  3. Remove the wall between *U* and a random, visited neighbor.
+  4. Mark *U* as visited.
+  5. Foreach unvisited neighbor of *U*:
+    1. If the unvisited neighbor does not already exist in *L*, add it to *L*.
+  6. Remove *U* from *L*.
+
+This algorithm is modified from the classic algorithm described on the Wikipedia page because, in this enviorment, walls are not modeled separately from cells. Therefore, obtaining a list of walls alone (as suggested by the Wikipedia page) is not meaningful. Instead, this modified code iterates through each of the cells and each of the cells' neighbors. This does not change the algorithm's result in a notable manner.
+
+### Pathfinding
+Each of the pathfinding algorithm's described in this section link together cells in a unidirectional manner that allows traversal from the destination node back to the start node. This singly linked list can be traversed at the conclusion of each algorithm to get the path from the start node to the destination node.
+
+#### Dijkstra's Algorithm
+The implementation of Dijkstra's algorithm in this application is based on the [Wikipedia page](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm). The pseudocode present there reflects the same enviroment architecture as described above, so the implementation in this application is similar to the classic implementation described online.
+
+The implementation in this application is as follows:
+1. This algorithm accepts a list of cells that represents the grid of cells. Ensure that each cell can store a new value to represent the distance from the start cell. Initialize that distance to a very high number (for example, 10000).
+2. Select a start cell and mark it as the current cell. Select a destination cell and mark it as such.
+3. Initialize two lists of cells, visited cells, *V*, and unvisited cells *U*.
+4. While the next cell is not equal to the destination cell:
+  1. Get a list of traversable neighbors, *T*, from the current cell.
+  2. Add each unvisited neighbor in *T* to *U*.
+  3. Set the current cell as each unvisited neighbor in *U*'s previous cell.
+  4. For each unvisited cell in *U*:
+    1. Create a temporary integer to represent a tentative distance. Set it equal to the current cell's distance from the start + 1 (because all cells are exactly 1 unit away from each other).
+    2. If that tentative distance is shorter than the unvisited cell's distance from start value, replace the unvisited cell's distance from start value with the tentative distance. Additionally, mark the current cell as the previous cell for the unvisited cell.
+  5. Remove the current cell from *U* (if it exists in *U*) and add it to *V* (if it does not exist in *V*).
+  6. Choose the cell with the shortest distance from start in *U* and designate it as the current cell. 
+  7. If the current cell is the destination cell, the algorithm has finished. Otherwise, the loop repeats with the new current cell.
+
+This algorithm is concerned only with the closest unvisited cell to the start. This is considered greedy, meaning it assumes that continuously selecting locally short paths will eventually lead to the shortest path in the global space. This is not always the case, which leads to unecessary calculations. The next algorithm aims to mitigate the greediness of Dijkstra's by considering also the global distance to the destination cell.
+
+#### A* Algorithm
+The implementation of the A* algorithm in this application is based on the [Wikipedia page](https://en.wikipedia.org/wiki/A*_search_algorithm). The pseudocode present there reflects the same enviroment architecture as described above, so the implementation in this application is similar to the classic implementation described online.
+
+Conceptually and in practice, A* is a very similar algorithm to Dijkstra's algorithm. The only differences occur in step 4.4 and step 4.6 in the Dijkstra's algorithm pseudocode above. Instead of considering a tentative distance, A* instead calculates three separate distances (costs) for each unvisited cell in *U*:
+  1. GCost - The distance of the unvisited cell from the start node (the same as the tentative distance stored in Dijkstra's algorithm)
+  2. HCost - The "heuristic" cost is an estimate of how far away the unvisited cell in *U* is from the destination cell. The algorithm obviously does not know the actual distance from the destination cell (that is part of what the algorithm seeks to calculate!) but it does know the location of the destination cell. Therefore, the Manhattan distance between the unvisited cell in *U* and the destination cell is used to define the HCost of a cell.
+  3. FCost - The sum of GCost and HCost.
+
+Now, in step 4.6 of Dijkstra's algorithm above, instead of selecting the next cell as the unvisited cell in *U* with the closest distance to the start cell, A* selects the unvisited cell in *U* with the lowest FCost, thereby attempting to minimize both the distance from the start and destination cell, and typically resulting in a more direct pathfinding algorithm. A* is widely used in video games.
+
+## Unit Testing
+Unit tests were written in the spirit of creating a clean, safe, and scalable code base. The general philosophy and methodology for how unit tests were designed is described in this section. For more detail regarding individual unit testing classes please refer to the documentation available for download in the source code (ADD IN DOCUMENTATION OR FIGURE OUT A BETTER WAY TO LINK THIS HTML INDEX FILE).
+
+All unit testing was conducted only on the backend calculation engine. Tests were designed to test specific functionality of a single method within a class. The tests were named using the following convention: NameOfMethod_ConditionsOfTest_ExpectedResultOfTest. Because the tests were named in this manner, reviewing the documentation (ADD IN DOCUMENTATION OR FIGURE OUT A BETTER WAY TO LINK THIS HTML INDEX FILE) will give the reader a complete understanding of each test and its intentions. More tests were completed for class methods with many possible conditions.
+
+## Where to Go Next
+[[Production Design|Production Design]]
+
+Since this page details only what is common between the prototype and the production application, you can proceed to the [[Production Design|Production Design]] page to learn more about the design aspects specific to the shipped product.
