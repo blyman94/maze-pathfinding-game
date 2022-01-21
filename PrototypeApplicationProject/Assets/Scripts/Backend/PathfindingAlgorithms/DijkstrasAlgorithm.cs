@@ -35,6 +35,7 @@ public class DijkstrasAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
                 if (!(visitedCells.Contains(neighbor)))
                 {
                     unvisitedCells.Add(neighbor);
+                    neighbor.PreviousCell = current;
                 }
             }
 
@@ -44,7 +45,6 @@ public class DijkstrasAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
                 if (tentativeDistance < unvisitedCell.GCost)
                 {
                     unvisitedCell.GCost = tentativeDistance;
-                    unvisitedCell.PreviousCell = current;
                 }
             }
 
@@ -59,7 +59,7 @@ public class DijkstrasAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
 
             current = MinGCost(unvisitedCells);
             current.DistanceRatio =
-                    current.GetManhattanDistance(destination) / maxDistance;
+                current.GetManhattanDistance(destination) / maxDistance;
         }
     }
 
@@ -85,6 +85,7 @@ public class DijkstrasAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
             if (!(visitedCells.Contains(neighbor)))
             {
                 unvisitedCells.Add(neighbor);
+                neighbor.PreviousCell = current;
             }
         }
 
@@ -94,7 +95,6 @@ public class DijkstrasAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
             if (tentativeDistance < unvisitedCell.GCost)
             {
                 unvisitedCell.GCost = tentativeDistance;
-                unvisitedCell.PreviousCell = current;
             }
         }
 
@@ -116,7 +116,7 @@ public class DijkstrasAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
             return true;
         }
         else
-        {  
+        {
             iterations++;
             return false;
         }
