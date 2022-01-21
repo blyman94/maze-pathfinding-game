@@ -1,0 +1,16 @@
+This page covers the aspects of the implementation that are specific to the prototype code base.
+
+# Overview
+The purpose of the prototype is to display a visual representation of the maze generation and pathfinding algorithms used in the final application. Since the final application will be a video game, visualizations of underlying calculations is conventionally hidden from the player. Additionally, the game will appear in 3D space and the underlying algorithms will be conducted in 2D space. Thus, the prototype will help to visualize exactly what's happening "under the hood" of the production application.
+
+# Visualization
+When demonstrating the algorithms used in the application, it is common to use iterative visuals to convey clearly each step of the calculation. Examples of this can be found in many educational sources online. For example, embedded in the [Wikipedia page](https://en.wikipedia.org/wiki/Maze_generation_algorithm) for maze generation algorithms are videos of the step-by-step maze generation process for each of the three algorithms used in this application. They show an empty grid of cells and iteratively change the appearance of these cells to reflect changes in their state, calculated by whichever algorithm is operating on them. These help the reader better understand how each algorithm differs from one another. The prototype is inspired by these videos, as they proved to be an excellent tool in learning how to implement the algorithms. 
+
+# Design
+The prototype application will be a very simple Unity project that will consist of five visualizations. Each will display one of the three maze generation algorithms or one of the two pathfinding algorithms. The visual will display each iteration of it's subject algorithm step by step, similar to the visualizations described above. The goal of the prototype is for it to be a standalone application that has value beyond just supporting the game made with its core design.
+
+## Controls
+The user has several controls available in a GUI to manipulate how the visualization conducts itself. The user can select one of the five visualizations by clicking on-screen buttons. They can control the speed of the visualization with an on-screen slider. They can restart the current visualization with an on-screen button. They can change the row and column count of the visualization's grid with on-screen sliders, but they must restart the visualization for the effect to materialize. Finally, they can pause the current visualization with an on-screen button. These controls allow the user to engage more deeply with the content and get a better understanding of the underlying algorithms.
+
+## Educational Elements
+The GUI will also have a text field that provides the user with a description of each algorithm. This is to assist the user in gaining understanding of what is being visualized with the graphic in front of them. 
