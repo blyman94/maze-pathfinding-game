@@ -47,6 +47,30 @@ public abstract class PathfindingAlgorithm : ScriptableObject
     protected List<Cell> visitedCells;
 
     /// <summary>
+    /// Returns a stack representing the shortest path, with the start cell
+    /// at the top of the stack and the destination at the bottom of the stack.
+    /// </summary>
+    /// <returns>A stack of cells representing the shortest path from the start
+    /// cell to the destination cell.</returns>
+    public Stack<Cell> GetPathResult()
+    {
+        Stack<Cell> pathStack = new Stack<Cell>();
+        pathStack.Push(destination);
+
+        current = destination.PreviousCell;
+
+        while (current != start)
+        {
+            pathStack.Push(current);
+            current = current.PreviousCell;
+        }
+
+        pathStack.Push(start);
+
+        return pathStack;
+    }
+
+    /// <summary>
     /// Resets the algorithm to its initial state.
     /// </summary>
     public void Reset()
