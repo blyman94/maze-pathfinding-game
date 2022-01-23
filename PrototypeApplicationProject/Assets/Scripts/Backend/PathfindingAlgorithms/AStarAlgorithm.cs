@@ -57,7 +57,8 @@ public class AStarAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
 
             current = MinFCost(unvisitedCells);
             current.DistanceRatio =
-                    current.GetManhattanDistance(destination) / maxDistance;
+                    (float)current.GetManhattanDistance(destination) / 
+                    (float)maxDistance;
             iterations++;
         }
     }
@@ -106,7 +107,8 @@ public class AStarAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
 
         current = MinFCost(unvisitedCells);
         current.DistanceRatio =
-                current.GetManhattanDistance(destination) / maxDistance;
+                (float)current.GetManhattanDistance(destination) / 
+                (float)maxDistance;
         if (current == destination)
         {
             return true;

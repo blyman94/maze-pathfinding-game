@@ -6,6 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/RDFSScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/RKAScene.unity
+    guid: b9ce812a8650d254b8aa705912891526
+  - enabled: 1
+    path: Assets/Scenes/RPAScene.unity
+    guid: 03574c61b8e5a1d4c95dcb1628afba01
+  - enabled: 1
+    path: Assets/Scenes/DAScene.unity
+    guid: c573a0bc6dcfbfb46a6830d17bda29e8
+  - enabled: 1
+    path: Assets/Scenes/ASScene.unity
+    guid: c3f3b97b258bcb14e9c54e0a0fb79028
   m_configObjects: {}

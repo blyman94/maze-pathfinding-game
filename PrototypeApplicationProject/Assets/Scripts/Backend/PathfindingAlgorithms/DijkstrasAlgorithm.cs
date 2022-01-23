@@ -59,7 +59,8 @@ public class DijkstrasAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
 
             current = MinGCost(unvisitedCells);
             current.DistanceRatio =
-                current.GetManhattanDistance(destination) / maxDistance;
+                (float)current.GetManhattanDistance(destination) / 
+                (float)maxDistance;
         }
     }
 
@@ -109,7 +110,8 @@ public class DijkstrasAlgorithm : PathfindingAlgorithm, IPathfindingAlgorithm
 
         current = MinGCost(unvisitedCells);
         current.DistanceRatio =
-                current.GetManhattanDistance(destination) / maxDistance;
+                (float)current.GetManhattanDistance(destination) / 
+                (float)maxDistance;
 
         if (current == destination)
         {

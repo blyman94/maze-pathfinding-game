@@ -16,6 +16,13 @@ public class MazeGenerationAlgorithm : ScriptableObject
     /// </summary>
     protected int iterations;
 
+    #region ScriptableObject Methods
+    private void OnEnable()
+    {
+        Reset();
+    }
+    #endregion
+
     /// <summary>
     /// Resets the algorithm to its initial state.
     /// </summary>

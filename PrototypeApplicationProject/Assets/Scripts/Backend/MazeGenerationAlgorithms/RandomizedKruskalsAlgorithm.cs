@@ -33,10 +33,6 @@ public class RandomizedKruskalsAlgorithm : MazeGenerationAlgorithm,
     {
         if (iterations == 0)
         {
-            current = cellGrid.Cells[0];
-            current.VisitCount++;
-            current.Active = true;
-
             rnd = new System.Random();
 
             disjointSet = new DisjointSet(cellGrid.Cells);
@@ -66,10 +62,6 @@ public class RandomizedKruskalsAlgorithm : MazeGenerationAlgorithm,
     {
         if (iterations == 0)
         {
-            current = cellGrid.Cells[0];
-            current.VisitCount++;
-            current.Active = true;
-
             rnd = new System.Random();
 
             disjointSet = new DisjointSet(cellGrid.Cells);

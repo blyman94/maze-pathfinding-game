@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39612eb2db8e4dc468c60ca9f8f7725f, type: 3}
+  m_Name: CellObjectPooler
+  m_EditorClassIdentifier: 
+  ObjectToPool: {fileID: 4599595814337044303, guid: 128a2f3a3b18f424e99130066a5bbff1, type: 3}
+  InitialPoolSize: 100
+  CanGrow: 1

@@ -28,7 +28,6 @@ public class RandomizedPrimsAlgorithm : MazeGenerationAlgorithm,
             current = cellGrid.Cells[0];
             previous = null;
             current.VisitCount++;
-            current.Active = true;
 
             availableCells = new List<Cell>();
             availableCells.AddRange(current.GetNeighbors(visitedState: false));
@@ -73,7 +72,6 @@ public class RandomizedPrimsAlgorithm : MazeGenerationAlgorithm,
             current = cellGrid.Cells[0];
             previous = null;
             current.VisitCount++;
-            current.Active = true;
 
             availableCells = new List<Cell>();
             availableCells.AddRange(current.GetNeighbors(visitedState: false));
@@ -112,6 +110,7 @@ public class RandomizedPrimsAlgorithm : MazeGenerationAlgorithm,
         }
         else
         {
+            current.Active = false;
             return true;
         }
     }

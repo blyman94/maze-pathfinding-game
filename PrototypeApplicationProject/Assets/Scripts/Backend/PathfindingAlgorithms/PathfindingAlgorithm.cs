@@ -86,7 +86,7 @@ public abstract class PathfindingAlgorithm : ScriptableObject
     {
         if (current != start)
         {
-            if (current != destination)
+            if (current != destination && current.PreviousCell != start)
             {
                 current.IsPathCell = true;
             }

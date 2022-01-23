@@ -69,6 +69,7 @@ public class RandomizedDepthFirstSearch : MazeGenerationAlgorithm,
             }
             iterations++;
         }
+        current.Active = false;
     }
 
     public bool ExecuteIterative(CellGrid cellGrid)
@@ -120,6 +121,7 @@ public class RandomizedDepthFirstSearch : MazeGenerationAlgorithm,
         }
         else
         {
+            current.Active = false;
             return true;
         }
     }
