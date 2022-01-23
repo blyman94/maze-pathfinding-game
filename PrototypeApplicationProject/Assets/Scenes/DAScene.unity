@@ -281,8 +281,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MazeGenerationVisualizer, Assembly-CSharp
+      - m_Target: {fileID: 1589501642}
+        m_TargetAssemblyTypeName: AlgorithmVisualizer, Assembly-CSharp
         m_MethodName: set_IsPlaying
         m_Mode: 6
         m_Arguments:
@@ -5389,8 +5389,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MazeGenerationVisualizer, Assembly-CSharp
+      - m_Target: {fileID: 1589501642}
+        m_TargetAssemblyTypeName: AlgorithmVisualizer, Assembly-CSharp
         m_MethodName: set_IsPlaying
         m_Mode: 6
         m_Arguments:
